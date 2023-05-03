@@ -17,7 +17,7 @@ class PublicController extends Controller
         $data['programs'] = cache()->remember('programs_with_course_count', now()->addMinutes(2), function () {
             return  Program::select('programs.id', 'programs.program_name', 'programs.department_code')->withCount('courses')->where('program_status', 'Published')->orderBy('programs.program_name')->get();
         });
-        $courses = Course::leftJoin('programs', 'programs.id', '=', 'courses.course_program')->select('course_name', 'course_code', 'course_overview', 'course_banner', 'courses.id', 'program_name');
+        $courses = Course::leftJoin('programs', 'programs.id', '=', 'courses.course_program')->select('course_name', 'course_code', 'course_overview', 'course_banner', 'courses.id', 'program_name', 'programs.id as program_id');
         if ($request->search) {
             $courses = $courses
                 ->where(
@@ -52,9 +52,9 @@ class PublicController extends Controller
         if ($user) {
             Auth::login($user);
             User::where('id', Auth::id())->update(['login_at' => date("M d, Y h:i A")]);
-            return redirect()->intended(route('admin.courses'));
+            return redirect()->intended(route('admin.overview'));
         } else {
-            return back()->with('message', ['content' => 'We could not identify you on the platform, kindly contact support on what to do next', 'status' => 'danger']);
+            return back()->with('message', ['content' => 'We could not identify you on our platform, kindly contact support on what to do next', 'status' => 'danger']);
         }
     }
 }

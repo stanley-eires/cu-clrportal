@@ -7,7 +7,10 @@ import moment from 'moment';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 
 let props = defineProps( { title: String, data: Object } );
-
+const maintenance_functions = [
+    { type: 'clear_cache', name: 'Clear Data Caches', destructive: false, },
+    { type: 'create_symlink', name: 'Create Symlink', destructive: false },
+    { type: 'reset_platform', name: 'Reset Platform', destructive: true } ]
 </script>
 <template>
     <AuthenticatedLayout :title="title">
@@ -73,7 +76,7 @@ let props = defineProps( { title: String, data: Object } );
                                     </VueApexCharts>
                                 </div>
                                 <div class="tab-pane" id="course_view" role="tabpanel">
-                                    <VueApexCharts height="400px" type="bar" :options="{
+                                    <VueApexCharts height="500px" type="bar" :options="{
                                             plotOptions: {
                                                 bar: {
                                                     barHeight: '100%',
@@ -84,8 +87,6 @@ let props = defineProps( { title: String, data: Object } );
                                                     },
                                                 }
                                             },
-                                            colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e', '#f48024', '#69d2e7'
-                                            ],
                                             dataLabels: {
                                                 enabled: true,
                                                 textAnchor: 'start',
@@ -114,7 +115,7 @@ let props = defineProps( { title: String, data: Object } );
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="card card-body shadow  mb-4">
+                <div class="card card-body shadow  mb-3">
                     <h3>Users on Platform (Ratio)</h3>
                     <VueApexCharts type="pie" :options="{
                             legend: {
@@ -124,8 +125,8 @@ let props = defineProps( { title: String, data: Object } );
                         }" :series="data.users_by_group.map(e => e.total_count)">
                     </VueApexCharts>
                 </div>
-                <div class="card card-body shadow">
-                    <h3>Recent Logins</h3>
+                <div class="card card-body shadow  mb-3">
+                    <h3>Recent Login</h3>
                     <table class="table table-sm small">
                         <thead>
                             <tr>
@@ -150,6 +151,22 @@ let props = defineProps( { title: String, data: Object } );
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="card card-body shadow">
+                    <h5 class="card-title mb-3">Maintenance Functions</h5>
+                    <ul class="list-unstyled row">
+                        <li v-for="func in maintenance_functions" :key="func">
+                            <Link v-if="func.destructive"
+                                onclick="return prompt('This is a destructive action and should only be done by someone who knows the consequences.\n\nEnter: I UNDERSTAND in the input field below to continue') == 'I UNDERSTAND'"
+                                class="btn btn-link text-danger" as="button" method="post" :data="{ type: func.type }"
+                                :href="route('admin.maintenance-functions')"><i
+                                class="fa fa-exclamation-triangle  me-1"></i>
+                            {{ func.name }}</Link>
+                            <Link v-else class="btn btn-link" as="button" method="post" :data="{ type: func.type }"
+                                :href="route('admin.maintenance-functions')"><i class="fa fa-chevron-right  me-1"></i>
+                            {{ func.name }}</Link>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

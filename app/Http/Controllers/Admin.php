@@ -7,6 +7,8 @@ use App\Models\Department;
 use App\Models\Program;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -192,5 +194,34 @@ class Admin extends Controller
             return to_route('admin.course.edit', [$id]);
         }
         return back();
+    }
+
+    public function maintenanceFunctions(Request $request)
+    {
+        $type = $request->type;
+        $content = null;
+        if ($type == 'clear_cache') {
+            $exitCode = Artisan::call("cache:clear");
+            $exitCode = Artisan::call("route:clear");
+            $exitCode = Artisan::call("view:clear");
+            $exitCode = Artisan::call("config:clear");
+            $exitCode = Artisan::call("route:cache");
+            $exitCode = Artisan::call("config:cache");
+            $exitCode = Artisan::call("view:cache");
+            $content = "Site cache has been cleared.";
+        } elseif ($type == 'create_symlink') {
+            $exitCode = Artisan::call("storage:link");
+            $content = "Symlink created";
+        } elseif ($type == 'reset_platform') {
+            User::where('id', '!=', Auth::id())->forceDelete();
+            Course::truncate();
+            Department::truncate();
+            Program::truncate();
+            $content = "Tables Truncated. You are now the only user on the platform";
+        }
+        return back()->with('message', [
+            'content' => $content,
+            'status' => 'success',
+        ]);
     }
 }

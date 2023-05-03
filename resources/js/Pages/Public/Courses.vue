@@ -114,7 +114,7 @@ let clearFilters = () => {
                         </div>
                         <div class="row g-3">
                             <div class="col-md-6" v-for="course in courses.data" :key="course.id">
-                                <div class="card mb-3 h-100 shadow">
+                                <div class="card  h-100 shadow">
                                     <div class="card-body">
                                         <div class="d-flex">
                                             <div class="flex-shrink-0">
@@ -125,18 +125,20 @@ let clearFilters = () => {
                                                     class="rounded-0 d-block border badge btn-primary ">{{ course.course_code }}</span>
                                             </div>
                                             <div class="flex-grow-1 ms-3">
-
-                                                <Link class="stretched-link d-block fw-bold"
-                                                    :href="route('public.course.single', [course.id])">
-                                                {{ course.course_name }}
-                                                </Link>
-                                                <p class="small">
-                                                    {{ truncate(course.course_overview, { length: 200 }) }}
-                                                </p>
+                                                <div class="position-relative">
+                                                    <Link class="stretched-link d-block fw-bold"
+                                                        :href="route('public.course.single', [course.id])">
+                                                    {{ course.course_name }}
+                                                    </Link>
+                                                    <p class="small">
+                                                        {{ truncate(course.course_overview, { length: 200 }) }}
+                                                    </p>
+                                                </div>
                                                 <div class="">
-                                                    <a href="#"
-                                                        class="badge text-wrap d-inline-block rounded text-white badge-dark"><i
-                                                            class="fas fa-award me-1"></i> {{ course.program_name }}</a>
+                                                    <Link
+                                                        :href="route('public.courses', [{ 'programs[]': course.program_id }])"
+                                                        class="badge text-wrap d-inline-block rounded text-white badge-dark">
+                                                    <i class="fas fa-award me-1"></i> {{ course.program_name }}</Link>
                                                     <small
                                                         class="small badge text-wrap text-dark px-0 mx-1">Undergraduate</small>
                                                 </div>
@@ -146,7 +148,9 @@ let clearFilters = () => {
                                 </div>
                             </div>
                         </div>
-                        <pagination :data="courses"></pagination>
+                        <div class="d-flex justify-content-center mt-3">
+                            <pagination :data="courses"></pagination>
+                        </div>
                     </div>
                     <div v-else class="jumbotron-fluid text-center">
                         <h1 class="display-4 text-primary fw-bold">We couldn't find anything !!!</h1>

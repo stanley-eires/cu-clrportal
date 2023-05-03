@@ -28,7 +28,7 @@ Route::post('logout', function (Request $request) {
     Auth::guard('web')->logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    return back()->with('message', ['content' => 'You have been logged out', 'status' => 'success']);
+    return to_route('public.courses')->with('message', ['content' => 'You have been logged out', 'status' => 'success']);
 })->name('logout');
 
 Route::prefix('administrator')->group(function () {
@@ -52,6 +52,7 @@ Route::prefix('administrator')->group(function () {
         Route::get('/users/download', [Admin::class, 'download_users'])->name('admin.users.download');
         Route::post('/users/upload', [Admin::class, 'upload_users'])->name('admin.users.upload');
     });
+    Route::post('/maintenance-functions', [Admin::class, 'maintenanceFunctions'])->name('admin.maintenance-functions')->middleware('mustlogin:admin');
 });
 
 Route::prefix('seedings')->group(

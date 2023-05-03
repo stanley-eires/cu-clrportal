@@ -17,9 +17,9 @@ class OnlyLoggedInUsers
     public function handle(Request $request, Closure $next, ...$role): Response
     {
         if (!Auth::id()) {
-            return redirect(route('public.courses'))->with('message', ['content' => 'The page you are trying to access requires authentication', 'status' => 'error']);
+            return back()->with('message', ['content' => 'Login is required to continue.', 'status' => 'error']);
         } elseif (count(array_intersect($role, Auth::user()->roles)) === 0) {
-            return back()->with('message', ['content' => 'You do not have the right permission(s) to view the page you were trying to access', 'status' => 'error']);
+            return back()->with('message', ['content' => 'You do not have the required permissions to access this page.', 'status' => 'error']);
         }
         return $next($request);
     }
