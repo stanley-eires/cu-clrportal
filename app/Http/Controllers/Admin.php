@@ -53,10 +53,7 @@ class Admin extends Controller
         } else {
             User::whereIn('id', $request->id)->update($request->except(['id']));
         }
-        return back()->with('message', [
-            'content' => count($request->id) . " users modified",
-            'status' => 'success'
-        ]);
+        return back();
     }
     public function download_users()
     {
@@ -133,10 +130,7 @@ class Admin extends Controller
         } else {
             Program::whereIn('id', $request->id)->update($request->except(['id']));
         }
-        return back()->with('message', [
-            'content' => count($request->id) . " program(s) modified",
-            'status' => 'success'
-        ]);
+        return back();
     }
 
     // COURSES CONTROL
@@ -150,10 +144,7 @@ class Admin extends Controller
     public function course_bulk_actions(Request $request, $action = null)
     {
         $action && $action == 'delete' ? Course::whereIn('id', $request->id)->delete($request->id) : Course::whereIn('id', $request->id)->update($request->except(['id']));
-        return back()->with('message', [
-            'content' => count($request->id) . " Course(s) modified",
-            'status' => 'success'
-        ]);
+        return back();
     }
     public function course_create()
     {
@@ -203,12 +194,12 @@ class Admin extends Controller
         if ($type == 'clear_cache') {
             $exitCode = Artisan::call("cache:clear");
             $exitCode = Artisan::call("route:clear");
-            $exitCode = Artisan::call("view:clear");
             $exitCode = Artisan::call("config:clear");
+            $content = "Site cache have been cleared.";
+        } elseif ($type == 'optimize') {
             $exitCode = Artisan::call("route:cache");
             $exitCode = Artisan::call("config:cache");
-            $exitCode = Artisan::call("view:cache");
-            $content = "Site cache has been cleared.";
+            $content = "Some files have been cached";
         } elseif ($type == 'create_symlink') {
             $exitCode = Artisan::call("storage:link");
             $content = "Symlink created";

@@ -4,10 +4,12 @@ import '../css/app.css';
 import vue3GoogleLogin from 'vue3-google-login';
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Vue3Toasity from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
 const appName = window.document.getElementsByTagName( 'title' )[ 0 ]?.innerText || 'Laravel';
 
@@ -15,7 +17,13 @@ const appName = window.document.getElementsByTagName( 'title' )[ 0 ]?.innerText 
 
 createInertiaApp( {
     title: ( title ) => `${ title } - ${ appName }`,
-    resolve: ( name ) => resolvePageComponent( `./Pages/${ name }.vue`, import.meta.glob( './Pages/**/*.vue' ) ),
+    resolve: name => {
+        const pages = import.meta.glob( './Pages/**/*.vue', { eager: true } )
+        let page = pages[ `./Pages/${ name }.vue` ];
+        page.default.layout = name.startsWith( 'Public' ) ? GuestLayout : AuthenticatedLayout
+        return page
+    },
+    // resolve: ( name ) => resolvePageComponent( `./Pages/${ name }.vue`, import.meta.glob( './Pages/**/*.vue' ) ),
     setup( { el, App, props, plugin } ) {
         return createApp( { render: () => h( App, props ) } )
             .use( plugin )

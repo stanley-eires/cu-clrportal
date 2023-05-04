@@ -1,18 +1,18 @@
 <script setup>
 
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import LoginButton from "@/Components/LoginButton.vue";
 import { toast } from "vue3-toastify";
-import { onMounted } from 'vue';
-onMounted( () => {
-    setTimeout( () => {
-        let flash = usePage().props.flash.message;
-        if ( flash ) {
-            toast[ flash.status ]( flash.content );
-        }
-        flash = null;
-    } );
-} )
+import { computed, watch } from 'vue';
+
+let message = computed( () => usePage().props.flash.message )
+watch( message, ( value ) => {
+    if ( value ) {
+        toast[ value.status ]( value.content );
+        router.reload( { only: undefined } )
+    }
+}, { deep: true } )
+
 </script>
 
 <template>

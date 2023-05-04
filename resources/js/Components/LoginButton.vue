@@ -12,9 +12,10 @@ const handleLogin = ( response ) => {
 }
 let roles = usePage().props.auth.user?.roles;
 let menu = [
-    { title: 'Users', url: route( 'admin.users' ), show: roles?.includes( 'admin' ) },
-    { title: 'Programs', url: route( 'admin.programs' ), show: roles?.includes( 'author' ) },
-    { title: 'Courses', url: route( 'admin.courses' ), show: roles?.includes( 'author' ) }
+    { title: 'Overview', url: route( 'admin.overview' ), roles: [ 'admin', 'author' ] },
+    { title: 'Users', url: route( 'admin.users' ), roles: [ 'admin' ] },
+    { title: 'Programs', url: route( 'admin.programs' ), roles: [ 'author' ] },
+    { title: 'Courses', url: route( 'admin.courses' ), roles: [ 'author' ] }
 ]
 </script>
 
@@ -30,7 +31,8 @@ let menu = [
 
             <div class="dropdown-menu dropdown-menu-right mt-3">
                 <template v-for="i in menu" :key="i">
-                    <Link class="dropdown-item" v-if="i.show" :href="i.url">{{ i.title }}</Link>
+                    <Link class="dropdown-item" v-if="i.roles.some((role) => $page.props.auth.user.roles.includes(role))"
+                        :href="i.url">{{ i.title }}</Link>
                 </template>
                 <div class="dropdown-divider my-0"></div>
                 <Link @click="googleLogout" :href="route('logout')" class="dropdown-item" method="POST">Sign out</Link>

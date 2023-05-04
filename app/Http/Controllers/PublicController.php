@@ -13,7 +13,7 @@ class PublicController extends Controller
 {
     public function index(Request $request)
     {
-        //Auth::loginUsingId(1);
+        Auth::loginUsingId(1);
         $data['programs'] = cache()->remember('programs_with_course_count', now()->addMinutes(2), function () {
             return  Program::select('programs.id', 'programs.program_name', 'programs.department_code')->withCount('courses')->where('program_status', 'Published')->orderBy('programs.program_name')->get();
         });
@@ -29,7 +29,7 @@ class PublicController extends Controller
         if ($request->programs) {
             $courses = $courses->whereIn('programs.id', $request->programs);
         }
-        $data['courses'] = $courses->where('course_status', 'Published')->orderBy('course_name')->paginate($request->search || $request->programs ? 100 : 50);
+        $data['courses'] = $courses->where('course_status', 'Published')->orderBy('course_name')->paginate(20)->withQueryString();
         $data['title'] = "All Courses";
         return Inertia::render('Public/Courses', $data);
     }
@@ -48,13 +48,13 @@ class PublicController extends Controller
     public function handleLogin(Request $request)
     {
         $email = $request->email;
-        $user = User::where(['email' => $email])->firstOrFail();
+        $user = User::where(['email' => $email])->first();
         if ($user) {
             Auth::login($user);
             User::where('id', Auth::id())->update(['login_at' => date("M d, Y h:i A")]);
             return redirect()->intended(route('admin.overview'));
         } else {
-            return back()->with('message', ['content' => 'We could not identify you on our platform, kindly contact support on what to do next', 'status' => 'danger']);
+            return back()->with('message', ['content' => "We could not identify you on our platform, kindly contact <strong><a href='mailto:ifeakachuku.osinulu@covenantuniversity.edu.ng'>Mrs Osinulu (Support)</a></strong> on what to do next", 'status' => 'error']);
         }
     }
 }

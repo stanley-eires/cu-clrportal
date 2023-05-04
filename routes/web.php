@@ -32,7 +32,7 @@ Route::post('logout', function (Request $request) {
 })->name('logout');
 
 Route::prefix('administrator')->group(function () {
-    Route::get('/overview', [Admin::class, 'overview'])->name('admin.overview');
+    Route::get('/overview', [Admin::class, 'overview'])->name('admin.overview')->middleware('mustlogin:admin,author');
     Route::middleware('mustlogin:author')->group(function () {
 
         Route::get('/courses', [Admin::class, 'courses'])->name('admin.courses');
@@ -52,7 +52,7 @@ Route::prefix('administrator')->group(function () {
         Route::get('/users/download', [Admin::class, 'download_users'])->name('admin.users.download');
         Route::post('/users/upload', [Admin::class, 'upload_users'])->name('admin.users.upload');
     });
-    Route::post('/maintenance-functions', [Admin::class, 'maintenanceFunctions'])->name('admin.maintenance-functions')->middleware('mustlogin:admin');
+    Route::match(['get', 'post'], '/maintenance-functions', [Admin::class, 'maintenanceFunctions'])->name('admin.maintenance-functions')->middleware('mustlogin:admin');
 });
 
 Route::prefix('seedings')->group(
