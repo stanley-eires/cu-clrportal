@@ -13,7 +13,7 @@ class PublicController extends Controller
 {
     public function index(Request $request)
     {
-        Auth::loginUsingId(1);
+        //Auth::loginUsingId(1);
         $data['programs'] = cache()->remember('programs_with_course_count', now()->addMinutes(2), function () {
             return  Program::select('programs.id', 'programs.program_name', 'programs.department_code')->withCount('courses')->where('program_status', 'Published')->orderBy('programs.program_name')->get();
         });

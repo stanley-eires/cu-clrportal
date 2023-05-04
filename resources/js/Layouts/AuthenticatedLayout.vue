@@ -32,7 +32,7 @@ watch( message, ( value ) => {
 <template>
     <Head :title="title" />
     <nav class="navbar fixed-top">
-        <div class="container">
+        <div class="container-md">
             <div class="d-flex align-items-center navbar-left">
                 <a href="#" @click.prevent="togglemenu" class="menu-button d-md-none">
                     <i class="fas fa-bars fs-5"></i>

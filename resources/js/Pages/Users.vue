@@ -48,10 +48,10 @@ let handleUsersUpload = ( ev ) => {
 
 </script>
 <template>
-    <div class="row">
-        <div class="col-md-4 " v-if="show_form">
+    <div class="row g-3">
+        <div class="col-md-12 col-lg-4" v-if="show_form">
             <div class="sticky-sidebar ">
-                <form action="" class="card card-body" @submit.prevent="handleSubmit">
+                <form action="" @submit.prevent="handleSubmit">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" v-model="form.name" required>
                         <label>Fullname</label>
@@ -105,9 +105,9 @@ let handleUsersUpload = ( ev ) => {
                 </form>
             </div>
         </div>
-        <div class="col-md">
+        <div class="col-lg-8">
             <div class="card card-body shadow" style="min-height:50vh">
-                <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex align-items-center flex-wrap justify-content-between mb-3">
                     <div v-if="id.length > 0">
                         <Link method="put" :preserve-state="false" :href="route('admin.users.bulk-actions')"
                             :data="{ status: 1, id }" class="btn btn-sm me-1 btn-primary "><i class="fa fa-undo me-1"></i>
@@ -139,7 +139,7 @@ let handleUsersUpload = ( ev ) => {
                             </div>
                         </div>
                     </template>
-                    <form action="" class="col-lg-4">
+                    <form action="" class="col-12 col-lg-4 my-3">
                         <div class="input-group border border-secondary align-items-center">
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-transparent border-0 pe-0"><i
@@ -158,7 +158,7 @@ let handleUsersUpload = ( ev ) => {
                                         <input @change="selectAll($event)" class="form-check-input" type="checkbox">
                                     </div>
                                 </th>
-                                <th>Users</th>
+                                <th style="min-width:200px">Users</th>
                                 <th></th>
                                 <th>Status</th>
                                 <th>Date Joined</th>
@@ -185,7 +185,7 @@ let handleUsersUpload = ( ev ) => {
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="text-nowrap">
                                     <i v-if="user.roles.includes('admin')" class="fas fa-fire-flame-curved px-1 text-danger"
                                         title="Administrator"></i>
                                     <i v-if="user.roles.includes('author')" class="fas fa-file-pen  px-1 text-primary"

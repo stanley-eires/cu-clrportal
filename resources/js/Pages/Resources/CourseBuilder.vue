@@ -55,17 +55,17 @@ let bannerChange = ( ev ) => {
 
 <template>
     <div class="mb-3   py-2 card-header">
-        <button type="submit" @click.prevent="handleSubmit('save')" class="btn btn-primary  me-1"> <i
+        <button type="submit" @click.prevent="handleSubmit('save')" class="btn btn-primary btn-sm  me-1"> <i
                 class="fa fa-save  me-1  "></i>
             Save</button>
-        <button type="submit" @click.prevent="handleSubmit('close')" class="btn border me-1 border-primary text-primary "><i
-                class="fa fa-check me-1"></i> Save &
+        <button type="submit" @click.prevent="handleSubmit('close')"
+            class="d-none d-md-inline btn me-1 btn-sm  border-primary text-primary "><i class="fa fa-check me-1"></i> Save &
             Close</button>
-        <button type="submit" @click.prevent="handleSubmit('new')" class="btn border me-1 border-primary text-primary "><i
-                class="fa fa-plus me-1"></i> Save &
+        <button type="submit" @click.prevent="handleSubmit('new')"
+            class="d-none d-md-inline btn me-1 border-primary text-primary btn-sm"><i class="fa fa-plus me-1"></i> Save &
             New</button>
         <button v-if="course.id" type="submit" @click.prevent="handleSubmit('copy')"
-            class="btn border me-1 border-primary text-primary "><i class="fa fa-copy me-1"></i> Save as
+            class="btn me-1 border-primary text-primary btn-sm "><i class="fa fa-copy me-1"></i> Save as
             Copy</button>
         <Link :href="route('admin.courses')" class="btn border me-1 border-primary text-primary "><i
             class="fa fa-times-circle me-1"></i> Close</Link>

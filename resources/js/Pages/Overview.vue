@@ -13,24 +13,24 @@ const maintenance_functions = [
     { type: 'reset_platform', name: 'Reset Platform', destructive: true } ]
 </script>
 <template>
-    <div class="row g-lg-4">
+    <div class="row g-3">
         <div class="col-lg-8">
-            <div class="row g-lg-4">
-                <div class="col-lg-4">
+            <div class="row g-3">
+                <div class="col-lg-4 col-6">
                     <div class="card card-body shadow text-center">
                         <i class="fas fa-box-archive mb-2 fa-3x text-success"></i>
                         <p class="mb-0 fw-bold">Departments</p>
                         <p class="display-6  mb-0"><counter-up :number="data.departments"></counter-up></p>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-4 col-6">
                     <Link :href="route('admin.programs')" class="card card-body shadow text-center">
                     <i class="fas fa-folder mb-2 fa-3x text-primary"></i>
                     <p class="mb-0 fw-bold">Programs</p>
                     <p class="display-6  mb-0"><counter-up :number="data.programs"></counter-up></p>
                     </Link>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-4 col-6">
                     <Link :href="route('admin.courses')" class="card card-body shadow text-center">
                     <i class="fas fa-file-lines mb-2 fa-3x text-warning"></i>
                     <p class="mb-0 fw-bold">Courses</p>

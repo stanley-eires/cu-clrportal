@@ -18,7 +18,7 @@ let local_state = ref( props.modelValue );
                 <label>Resource</label>
             </div>
         </td>
-        <td>
+        <td style="min-width:150px">
             <div class="form-floating">
                 <select class="form-control form-select " v-model="local_state.type">
                     <option

@@ -29,7 +29,7 @@ let clearFilters = () => {
     <Head :title="title" />
     <div class="container my-5">
         <div class="row gx-5">
-            <div class="col-md-3">
+            <div class="col-lg-3">
                 <div class="offcanvas offcanvas-bottom" tabindex="-1" id="Id2">
                     <div class="offcanvas-header">
                         <div class="form-group w-100">
@@ -67,7 +67,7 @@ let clearFilters = () => {
                         </div>
                     </div>
                 </div>
-                <div class="d-none d-md-block sticky-sidebar">
+                <div class="d-none d-lg-block sticky-sidebar">
                     <div class="form-group mb-3">
                         <label for="">Search by keyword</label>
                         <div class="input-group border border-secondary shadow-sm align-items-center">
@@ -98,10 +98,10 @@ let clearFilters = () => {
                     </fieldset>
                 </div>
             </div>
-            <div class="col-md-9">
+            <div class="col-lg-9">
                 <div class="py-0" v-if="courses.data.length">
                     <div class='d-flex align-items-center justify-content-between'>
-                        <button class="btn btn-outline-primary text-nowrap mb-2 d-md-none btn-sm" type="button"
+                        <button class="btn btn-outline-primary text-nowrap mb-2 d-lg-none btn-sm" type="button"
                             data-bs-toggle="offcanvas" data-bs-target="#Id2">
                             <i class="fa fa-search"></i> Search
                         </button>

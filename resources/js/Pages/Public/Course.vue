@@ -33,9 +33,9 @@ let smoothScroll = ( id ) => {
     </nav>
     <div class="container ">
         <div class="row gx-5">
-            <div class="col-md-3 mb-3">
+            <div class="col-lg-3 mb-3">
                 <div class="sticky-sidebar">
-                    <nav class="nav flex-row flex-md-column  ">
+                    <nav class="nav flex-row flex-lg-column  ">
                         <a class="nav-link " href="#" @click.prevent="smoothScroll('overview')"><i
                                 class="fas fa-long-arrow-right me-2"></i>Overview</a>
                         <a v-if="course.resource_by_topics.length > 0" @click.prevent="smoothScroll('resource-by-topic')"
@@ -45,7 +45,7 @@ let smoothScroll = ( id ) => {
                     </nav>
                 </div>
             </div>
-            <div class="col-md-9" id="overview">
+            <div class="col-lg-9" id="overview">
 
                 <h3 class=" font-weight-bold lead">{{ course.course_name }}</h3>
                 <p>{{ course.course_overview }} </p>
