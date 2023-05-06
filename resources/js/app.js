@@ -17,13 +17,17 @@ const appName = window.document.getElementsByTagName( 'title' )[ 0 ]?.innerText 
 
 createInertiaApp( {
     title: ( title ) => `${ title } - ${ appName }`,
-    resolve: name => {
-        const pages = import.meta.glob( './Pages/**/*.vue', { eager: true } )
-        let page = pages[ `./Pages/${ name }.vue` ];
-        page.default.layout = name.startsWith( 'Public' ) ? GuestLayout : AuthenticatedLayout
-        return page
+    resolve: ( name ) => {
+        const page = resolvePageComponent(
+            `./Pages/${ name }.vue`,
+            import.meta.glob( "./Pages/**/*.vue" )
+        );
+        page.then( ( module ) => {
+            module.default.layout = name.startsWith( 'Public' ) ? GuestLayout : AuthenticatedLayout;
+        } );
+
+        return page;
     },
-    // resolve: ( name ) => resolvePageComponent( `./Pages/${ name }.vue`, import.meta.glob( './Pages/**/*.vue' ) ),
     setup( { el, App, props, plugin } ) {
         return createApp( { render: () => h( App, props ) } )
             .use( plugin )

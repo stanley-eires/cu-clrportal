@@ -17,8 +17,9 @@ let smoothScroll = ( id ) => {
 
 <template>
     <Head :title="title" />
-    <div class="mb-5 mast-head"
+    <div class="mb-5 px-5 d-flex align-items-center justify-content-center mast-head text-center"
         :style="{ 'background-image': course.course_banner ? `url('/storage/${course.course_banner}')` : `url(/assets/images/course_cover.jpg)` }">
+        <h1 class="text-white mb-0 display-6 fw-bold text-uppercase">{{ course.course_name }}</h1>
     </div>
     <nav class="breadcrumb">
         <div class="container">
@@ -61,7 +62,8 @@ let smoothScroll = ( id ) => {
                             data-bs-parent="#resources-type">
                             <div class="accordion-body">
                                 <div class="accordion" id="ResourceByTopicAccordion">
-                                    <div class="accordion-item" v-for="(_module, m_index) in course.resource_by_topics"
+                                    <div class="accordion-item"
+                                        v-for="(_module, m_index) in course.resource_by_topics.sort((x, y) => x.order - y.order)"
                                         :key="_module.id">
                                         <h4 class="accordion-header">
                                             <button class="accordion-button" :class="{ collapsed: m_index != 0 }"
@@ -117,7 +119,8 @@ let smoothScroll = ( id ) => {
                             data-bs-parent="#resources-type">
                             <div class="accordion-body">
                                 <div class="accordion" id="rbs">
-                                    <div class="accordion-item" v-for="(activity, a_index) in course.resource_by_skills"
+                                    <div class="accordion-item"
+                                        v-for="(activity, a_index) in course.resource_by_skills.sort((x, y) => x.order - y.order)"
                                         :key="activity.id">
                                         <h5 class="accordion-header">
                                             <button class="accordion-button align-items-start"
@@ -149,7 +152,7 @@ let smoothScroll = ( id ) => {
 <style scoped>
 .mast-head {
     height: 20vh;
-    background-color: #040304e3;
+    background-color: #000000ec;
     background-size: contain;
     background-position: center;
     background-repeat: repeat;

@@ -17,17 +17,15 @@ class Admin extends Controller
 {
     public function overview()
     {
+        $counts = ((array)DB::table('programs')->selectRaw('(SELECT COUNT(id) FROM programs) AS programs, (SELECT COUNT(id) FROM departments) AS departments,(SELECT COUNT(id) FROM courses) AS courses')->first());
         $data['title'] = "At a glance";
         $stats = [
-            'departments' => Department::count(),
-            'programs' => Program::count(),
-            'courses' => Course::count(),
             'courses_by_view' => Course::select('course_name', 'hits')->orderBy('hits', 'desc')->take(10)->get(),
             'program_by_view' => Program::leftJoin('courses', 'courses.course_program', '=', 'programs.id')->selectRaw('sum(hits) as program_hits, program_name')->orderBy('program_hits', 'desc')->groupBy('program_name')->take(10)->get(),
             'users_by_group' => User::selectRaw('user_group,count(id) as total_count')->groupBy('user_group')->get(),
             'users_login' => User::selectRaw('name,login_at')->orderBy('login_at', 'desc')->limit(5)->get()
         ];
-        $data['data'] = $stats;
+        $data['data'] = array_merge($stats, $counts);
         return Inertia::render('Overview', $data);
     }
 
@@ -177,7 +175,7 @@ class Admin extends Controller
         } elseif ($action == 'new') {
             return to_route('admin.course.create');
         } elseif ($action == 'save') {
-            return to_route('admin.course.edit', [$id]);
+            return to_route('admin.course.edit', [$id])->with('message', ['content' => "Course Saved", 'status' => 'success']);
         } elseif ($action == 'copy') {
             $request_array = $request->except(['action']);
             $request_array['course_name'] = $request_array['course_name'] . " (Copy)";

@@ -15,7 +15,7 @@ let selectAll = ( ev ) => {
 <template>
     <div class="btn-group btn-group-sm mb-3">
         <div v-if="id.length == 0" class="d-flex">
-            <Link :href="route('admin.course.create')" @click.prevent="submit" class="btn btn-primary   me-1">
+            <Link :href="route('admin.course.create')" @click.prevent="submit" class="btn btn-primary  me-1">
             <i class="fa fa-plus-circle  me-1  "></i>
             New</Link>
             <div class="dropdown">
@@ -32,14 +32,15 @@ let selectAll = ( ev ) => {
         </div>
         <div v-else>
             <Link method="put" :preserve-state="false" :href="route('admin.courses.bulk-actions')"
-                :data="{ course_status: 'Published', id }" class="btn  me-1 btn-primary "><i class="fa fa-check me-1"></i>
+                :data="{ course_status: 'Published', id }" class="btn  me-1 btn-primary btn-sm"><i
+                class="fa fa-check me-1"></i>
             Publish</Link>
             <Link method="put" :preserve-state="false" :href="route('admin.courses.bulk-actions')"
-                :data="{ course_status: 'Unpublished', id }" class="btn border me-1 border-primary text-primary "><i
+                :data="{ course_status: 'Unpublished', id }" class="btn me-1  text-primary btn-sm"><i
                 class="fa fa-times me-1"></i>
             Unpublish</Link>
             <Link method="put" :preserve-state="false" :href="route('admin.courses.bulk-actions', ['delete'])"
-                :data="{ id }" class="btn me-1 btn-outline-danger "><i class="fa fa-trash me-1"></i>
+                :data="{ id }" class="btn btn-sm  me-1 text-danger "><i class="fa fa-trash me-1"></i>
             Trash</Link>
         </div>
     </div>

@@ -13,7 +13,6 @@ let props = defineProps( {
     },
     userId: {
         type: [ String, Number ],
-        required: true
     }
 } )
 

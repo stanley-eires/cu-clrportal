@@ -1,13 +1,15 @@
 <script setup>
 import { Link, useForm } from '@inertiajs/vue3';
 import ResourceByTopic from '@/Components/ResourceByTopic.vue';
-import ModuleActivity from "@/Pages/Resources/ModuleActivity.vue";
+import ResourceBySkill from '@/Components/ResourceBySkill.vue';
 import { groupBy } from 'lodash'
 import { computed, ref } from 'vue';
 
 let props = defineProps( {
     course: Object, programs: Object, title: String
 } )
+
+
 let dept_by_program = computed( () => {
     return groupBy( props.programs, ( e ) => e.department_name )
 } )
@@ -30,7 +32,7 @@ let handleSubmit = ( action ) => {
     }
     form.transform( ( data ) => ( {
         ...data, action
-    } ) ).post( route( 'admin.course.save', [ props.course.id ?? null ] ), { preserveState: true, only: [ 'course' ] } )
+    } ) ).post( route( 'admin.course.save', [ props.course.id ?? null ] ), { preserveState: true, only: [ 'course', 'flash' ] } )
 }
 let addActivity = ( ev ) => {
     let id = form.resource_by_skills.length + 1;
@@ -67,7 +69,7 @@ let bannerChange = ( ev ) => {
         <button v-if="course.id" type="submit" @click.prevent="handleSubmit('copy')"
             class="btn me-1 border-primary text-primary btn-sm "><i class="fa fa-copy me-1"></i> Save as
             Copy</button>
-        <Link :href="route('admin.courses')" class="btn border me-1 border-primary text-primary "><i
+        <Link as="button" :href="route('admin.courses')" class="btn border me-1 border-primary text-primary "><i
             class="fa fa-times-circle me-1"></i> Close</Link>
     </div>
     <form class="row">
@@ -103,7 +105,7 @@ let bannerChange = ( ev ) => {
                     <div class="tab-content">
                         <div class="tab-pane active" id="content">
                             <div class="form-floating mb-3">
-                                <textarea style="height:150px" maxlength="250" class="form-control"
+                                <textarea style="height:100px" maxlength="250" class="form-control"
                                     v-model="form.course_overview"></textarea>
                                 <label class="form-label">Course Overview</label>
                             </div>
@@ -112,17 +114,7 @@ let bannerChange = ( ev ) => {
                             <ResourceByTopic :resource="form.resource_by_topics"></ResourceByTopic>
                         </div>
                         <div class="tab-pane " id="res-skill">
-                            <div class="accordion" id="activity">
-                                <module-activity label="Skillset" :model-value="resource" :id="`res-skill-${resource.id}`"
-                                    v-for="(resource, index) in form.resource_by_skills" :index="index" :key="resource.id"
-                                    @removeActivity="removeActivity"></module-activity>
-
-                                <div class="d-flex justify-content-center my-3">
-                                    <button @click.prevent="addActivity" class="btn alert-primary"><i
-                                            class="fa fa-plus"></i>
-                                        Add Skill</button>
-                                </div>
-                            </div>
+                            <ResourceBySkill :resource="form.resource_by_skills"></ResourceBySkill>
                         </div>
 
                     </div>
@@ -163,10 +155,24 @@ let bannerChange = ( ev ) => {
         </div>
     </form>
 </template>
-<style>
+<style >
 .accordion-button:not(.collapsed) {
     color: unset;
     background-color: unset;
     box-shadow: none
+}
+
+.flip-list-move {
+    transition: transform 0.5s;
+}
+
+.no-move {
+    transition: transform 0s;
+}
+
+.ghost {
+    opacity: 0.5;
+    border: 2px dotted;
+    background: #1c0625;
 }
 </style>
