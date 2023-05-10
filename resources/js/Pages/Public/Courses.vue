@@ -111,11 +111,11 @@ let clearFilters = () => {
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6" v-for="course in courses.data" :key="course.id">
-                            <div class="card  h-100 shadow">
+                            <div class="card  h-100 shadow rounded-2 border">
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-shrink-0">
-                                            <img :src="course.course_banner ? `/storage/${course.course_banner}` : '/assets/images/course_cover.jpg'"
+                                            <img :src="course.course_banner ? `/storage/${course.course_banner}` : '/assets/images/syllabus.png'"
                                                 :alt="course.course_name" style="width:70px;height:70px;object-fit: cover;">
                                             <span
                                                 class="rounded-0 d-block border badge btn-primary ">{{ course.course_code }}</span>

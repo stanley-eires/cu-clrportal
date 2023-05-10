@@ -33,7 +33,7 @@ class PublicController extends Controller
         $data['title'] = "All Courses";
         return Inertia::render('Public/Courses', $data);
     }
-    public function course($id)
+    public function course(Request $request, $id)
     {
         $data['course'] = cache()->remember(
             "course_single_{$id}",
@@ -42,7 +42,7 @@ class PublicController extends Controller
         );
         Course::where('id', $data['course']->id)->update(['hits' => $data['course']->hits + 1]);
         $data['title'] = $data['course']->course_name;
-        return Inertia::render('Public/Course', $data);
+        return Inertia::render($request->viewas == 'table' ? 'Public/CourseTable' : 'Public/Course', $data);
     }
 
     public function handleLogin(Request $request)

@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [PublicController::class, 'index'])->name('public.courses');
-Route::get('/course/{id}', [PublicController::class, 'course'])->name('public.course.single')->middleware('mustlogin:reader');
+Route::get('/course/{id}', [PublicController::class, 'course'])->name('public.course.single');
 Route::post('login', [PublicController::class, 'handleLogin'])->name('login');
 Route::post('logout', function (Request $request) {
     Auth::guard('web')->logout();

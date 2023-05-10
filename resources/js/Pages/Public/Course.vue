@@ -11,27 +11,33 @@ let smoothScroll = ( id ) => {
     const element = document.getElementById( id );
     const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
     window.scrollTo( { top: y, behavior: 'smooth' } );
-
+}
+let handlePrint = () => {
+    let pop = window.open( route( 'public.course.single', [ props.course.id, { viewas: 'table' } ] ), '_blank', 'width=1000,height=400,status=no' )
+    pop.print();
+    pop.onfocus = function () { setTimeout( function () { pop.close(); }, 10000 ); }
 }
 </script>
 
 <template>
     <Head :title="title" />
     <div class="mb-5 px-5 d-flex align-items-center justify-content-center mast-head text-center"
-        :style="{ 'background-image': course.course_banner ? `url('/storage/${course.course_banner}')` : `url(/assets/images/course_cover.jpg)` }">
+        :style="{ 'background-image': course.course_banner ? `url('/storage/${course.course_banner}')` : `url(/assets/images/syllabus.png)` }">
         <h1 class="text-white mb-0 display-6 fw-bold text-uppercase">{{ course.course_name }}</h1>
     </div>
-    <nav class="breadcrumb">
-        <div class="container">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <Link :href="route('public.courses')">Courses</Link>
-                </li>
-                <li class="breadcrumb-item">{{ course.program_name }}</li>
-                <li class="breadcrumb-item active">{{ course.course_name }}</li>
-            </ol>
-        </div>
-    </nav>
+    <div class="d-flex justify-content-end">
+        <button class="btn" @click="handlePrint"><i class="fas fa-print    "></i> Print Page</button>
+    </div>
+
+    <div class="container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <Link :href="route('public.courses')">Courses</Link>
+            </li>
+            <li class="breadcrumb-item">{{ course.program_name }}</li>
+            <li class="breadcrumb-item active">{{ course.course_name }}</li>
+        </ol>
+    </div>
     <div class="container ">
         <div class="row gx-5">
             <div class="col-lg-3 mb-3">
@@ -73,7 +79,7 @@ let smoothScroll = ( id ) => {
                                             </button>
                                         </h4>
                                         <div :id="`module-${kebabCase(_module.title)}`"
-                                            class="accordion-collapse collapse mb-5" :class="{ show: m_index == 0 }"
+                                            class="accordion-collapse collapse mb-0" :class="{ show: m_index == 0 }"
                                             data-bs-parent="#ResourceByTopicAccordion">
                                             <div class="accordion-body">
                                                 <div class="accordion" :id="`module-${kebabCase(_module.title)}-activity`">
@@ -91,7 +97,7 @@ let smoothScroll = ( id ) => {
                                                             </button>
                                                         </h5>
                                                         <div :id="`activity-${kebabCase(activity.title)}`"
-                                                            class="accordion-collapse collapse mb-5"
+                                                            class="accordion-collapse collapse mb-0"
                                                             :class="{ show: a_index == 0 }"
                                                             :data-bs-parent="`#module-${kebabCase(_module.title)}-activity`">
                                                             <div class="accordion-body">
@@ -130,7 +136,7 @@ let smoothScroll = ( id ) => {
                                             </button>
                                         </h5>
                                         <div :id="`activity-${kebabCase(activity.title)}`"
-                                            class="accordion-collapse collapse mb-5" :class="{ show: a_index == 0 }"
+                                            class="accordion-collapse collapse mb-0" :class="{ show: a_index == 0 }"
                                             data-bs-parent="#rbs">
                                             <div class="accordion-body">
                                                 <resources-tabbed :resource="activity.resources_list"></resources-tabbed>
