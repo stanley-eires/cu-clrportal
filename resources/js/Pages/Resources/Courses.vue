@@ -1,14 +1,16 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import moment from 'moment';
 import { ref } from "vue";
 import Pagination from '@/Components/Pagination.vue';
-let props = defineProps( {
-    courses: Object, title: String
-} )
+let props = defineProps( { courses: Object, title: String, keyword: String } )
 let id = ref( [] )
 let selectAll = ( ev ) => {
     id.value = ev.target.checked ? props.courses.data.map( e => e.id ) : [];
+}
+let form = useForm( { q: props.keyword } )
+let handleSearch = () => {
+    form.get( route( 'admin.courses' ) )
 }
 </script>
 
@@ -47,12 +49,12 @@ let selectAll = ( ev ) => {
     <div class="card card-body" style="min-height:50vh">
         <div class="d-flex justify-content-between mb-3">
             <div class="col-md-3">
-                <div class="input-group border border-secondary">
-                    <input class="form-control border-0" type="search" autofocus placeholder="Search....">
+                <form class="input-group border border-secondary" @submit.prevent="handleSearch">
+                    <input v-model="form.q" class="form-control border-0" type="search" autofocus placeholder="Search....">
                     <div class="input-group-append">
-                        <button class="btn"><i class="fa fa-search"></i></button>
+                        <button type="submit" class="btn"><i class="fa fa-search"></i></button>
                     </div>
-                </div>
+                </form>
             </div>
             <pagination :data="courses" simple></pagination>
         </div>
@@ -114,10 +116,12 @@ let selectAll = ( ev ) => {
                         </tr>
                     </template>
                     <tr v-else>
-                        <td class="fs-6" colspan="10"><em>You do not have any course on the platform.
-                                <Link class="text-primary" :href="route('admin.course.create')">Click here</Link> to get
-                                started
-                            </em></td>
+                        <td class="fs-6" colspan="10">
+                            <p>We could not find any course.
+                                <Link class="text-primary" :href="route('admin.course.create')">Click here</Link> to create
+                                one
+                            </p>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -125,5 +129,4 @@ let selectAll = ( ev ) => {
         <div class="d-flex justify-content-center">
             <pagination :data="courses"></pagination>
         </div>
-    </div>
-</template>
+</div></template>

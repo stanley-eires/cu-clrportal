@@ -113,7 +113,7 @@ const maintenance_functions = [
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card card-body shadow  mb-3">
+            <!-- <div class="card card-body shadow  mb-3">
                 <h3><i class="fas fa-user-group me-1"></i>Users on Platform (Ratio)</h3>
                 <VueApexCharts type="pie" :options="{
                     legend: {
@@ -122,7 +122,7 @@ const maintenance_functions = [
                     labels: data.users_by_group.map(e => e.user_group)
                 }" :series="data.users_by_group.map(e => e.total_count)">
                 </VueApexCharts>
-            </div>
+            </div> -->
             <div class="card card-body shadow  mb-3">
                 <h3><i class="fas fa-sign-in me-1"></i> Recent Login</h3>
                 <table class="table table-sm small">

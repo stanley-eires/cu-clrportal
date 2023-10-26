@@ -2,7 +2,6 @@
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import { decodeCredential, googleLogout } from 'vue3-google-login';
-Link
 
 const handleLogin = ( response ) => {
     const userData = decodeCredential( response.credential )
@@ -12,7 +11,7 @@ const handleLogin = ( response ) => {
 }
 let roles = usePage().props.auth.user?.roles;
 let menu = [
-    { title: 'Overview', url: route( 'admin.overview' ), roles: [ 'admin', 'author' ] },
+    { title: 'Overview', url: route( 'admin.overview' ), roles: [ 'admin', 'editor' ] },
     { title: 'Users', url: route( 'admin.users' ), roles: [ 'admin' ] },
     { title: 'Programs', url: route( 'admin.programs' ), roles: [ 'author' ] },
     { title: 'Courses', url: route( 'admin.courses' ), roles: [ 'author' ] }
@@ -31,8 +30,7 @@ let menu = [
 
             <div class="dropdown-menu dropdown-menu-right mt-3">
                 <template v-for="i in menu" :key="i">
-                    <Link class="dropdown-item" v-if="i.roles.some((role) => $page.props.auth.user.roles.includes(role))"
-                        :href="i.url">{{ i.title }}</Link>
+                    <Link class="dropdown-item" :href="i.url">{{ i.title }}</Link>
                 </template>
                 <div class="dropdown-divider my-0"></div>
                 <Link @click="googleLogout" :href="route('logout')" class="dropdown-item" method="POST">Sign out</Link>

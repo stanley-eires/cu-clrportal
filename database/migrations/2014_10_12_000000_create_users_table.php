@@ -20,13 +20,10 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('login_at')->nullable();
-            $table->string('user_group')->default('Faculty');
-            $table->json('roles');
             $table->boolean('status')->default(1);
             $table->rememberToken();
             $table->timestamps();
         });
-        User::seed();
     }
 
     /**

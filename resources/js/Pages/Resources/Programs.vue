@@ -3,9 +3,7 @@ import { Link, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import { groupBy } from 'lodash';
 
-let props = defineProps( {
-    programs: Object, departments: Object, title: String
-} )
+let props = defineProps( { programs: Object, departments: Object, title: String, keyword: String } )
 
 let dept_colors = computed( () => {
     let dept_color = [];
@@ -49,6 +47,10 @@ let handleSubmit = () => {
         preserveState: false, only: [ 'programs' ]
     } )
 }
+let searchform = useForm( { q: props.keyword } )
+let handleSearch = () => {
+    searchform.get( route( 'admin.programs' ) )
+}
 </script>
 
 <template>
@@ -59,11 +61,11 @@ let handleSubmit = () => {
                     <h6 class=" text-uppercase">{{ program ? 'Edit Program' : 'Create Program' }}
                     </h6>
                     <div class="form-floating mb-3">
-                        <input class="form-control" v-model="form.program_name" required>
+                        <input class="form-control form-control-lg" v-model="form.program_name" required>
                         <label>Programe Title</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <select class="form-control" v-model="form.department_code">
+                        <select class="form-select" v-model="form.department_code">
                             <optgroup :label="faculty" v-for="faculty in Object.keys(dept_by_faculty).sort()"
                                 :key="faculty">
                                 <option :value="i.department_code" v-for="i in dept_by_faculty[faculty]" :key="i.id">
@@ -73,7 +75,7 @@ let handleSubmit = () => {
                         <label>Department</label>
                     </div>
                     <div class="form-floating mb-5">
-                        <select class="form-control" v-model="form.degree">
+                        <select class="form-select" v-model="form.degree">
                             <option v-for="i in ['Undergraduate', 'Postgraduate']" :key="i">{{ i }}</option>
                         </select>
                         <label>Degree Type</label>
@@ -106,15 +108,15 @@ let handleSubmit = () => {
                             Trash</Link>
                         </div>
                     </div>
-                    <form action="" class="col-12 col-lg-4 my-3">
+                    <form class="col-12 col-lg-4 my-3" @submit.prevent="handleSearch">
                         <div class="input-group border border-secondary">
-                            <input class="form-control border-0" type="search" autofocus placeholder="Search....">
+                            <input v-model="searchform.q" class="form-control border-0" type="search" autofocus
+                                placeholder="Search....">
                             <div class="input-group-append">
-                                <button class="btn"><i class="fa fa-search"></i></button>
+                                <button type="submit" class="btn"><i class="fa fa-search"></i></button>
                             </div>
                         </div>
                     </form>
-
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover table-sm ">
@@ -181,4 +183,5 @@ let handleSubmit = () => {
     position: -webkit-sticky;
     position: sticky;
     top: 150px;
-}</style>
+}
+</style>

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class Admin extends Controller
 {
@@ -22,7 +24,7 @@ class Admin extends Controller
         $stats = [
             'courses_by_view' => Course::select('course_name', 'hits')->orderBy('hits', 'desc')->take(10)->get(),
             'program_by_view' => Program::leftJoin('courses', 'courses.course_program', '=', 'programs.id')->selectRaw('sum(hits) as program_hits, program_name')->orderBy('program_hits', 'desc')->groupBy('program_name')->take(10)->get(),
-            'users_by_group' => User::selectRaw('user_group,count(id) as total_count')->groupBy('user_group')->get(),
+            // 'users_by_group' => User::selectRaw('user_group,count(id) as total_count')->groupBy('user_group')->get(),
             'users_login' => User::selectRaw('name,login_at')->orderBy('login_at', 'desc')->limit(5)->get()
         ];
         $data['data'] = array_merge($stats, $counts);
@@ -33,13 +35,34 @@ class Admin extends Controller
     public function users(Request $request)
     {
         $data['title'] = "Manage Users";
-        $data['users'] = User::orderBy('name')->paginate(20);
+        $data['users'] = User::with('roles:id,name')->orderBy('name')->paginate(20);
+        $data['roles'] = Role::all();
+        //$request->user()->assignRole(ADMIN);
         return Inertia::render('Users', $data);
     }
+    public function rolesAndPermissions(Request $request)
+    {
+        $data['title'] = "Roles And Permissions";
+        $data['roles'] = Role::with('permissions:id,name')->select('id', 'name')->get();
+        $data['permissions'] = Permission::select('id', 'name')->get();
+        return Inertia::render('RolesAndPermissions', $data);
+    }
+    public function saveRolesAndPermissions(Request $request)
+    {
+        foreach ($request->roles as $key => $value) {
+            Role::where('name', $key)->first()->syncPermissions($value);
+        }
+    }
+
     public function user_save(Request $request)
     {
-        $request->id ? User::where('id', $request->post('id'))->update($request->post())
-            : User::create($request->post());
+        if ($request->id) {
+            $user = User::find($request->id);
+            $user->fill($request->only(['name', 'email']))->save();
+            $user->syncRoles([$request->role]);
+        } else {
+            User::create($request->only(['name', 'email']))->syncRoles([$request->role]);
+        }
         return back()->with('message', [
             'content' => $request->id ? "User details updated" : "New user created", 'status' => 'success'
         ]);
@@ -101,16 +124,27 @@ class Admin extends Controller
                 $users[] = $item;
             }
         }
-        DB::table('users')->upsert($users, 'email', ['name', 'email']);
+        DB::table('users')->upsert($users, 'email', ['name', 'email', 'roles']);
         return back();
     }
 
     // PROGRAMS CONTROL
-    public function programs()
+    public function programs(Request $request)
     {
         $data['title'] = "Manage Programs";
-        $data['programs'] = Program::select('programs.id', 'programs.program_name', 'programs.department_code', 'degree', 'program_status')->withCount('courses')->orderBy('programs.program_name')->get();
+        $data['keyword'] = $request->get('q');
+        $data['programs'] = Program::select('programs.id', 'programs.program_name', 'programs.department_code', 'degree', 'program_status')->withCount('courses');
+        if ($request->q) {
+            $data['programs'] = $data['programs']
+                ->where(
+                    fn ($query) =>
+                    $query->where('program_name', 'like', "%{$request->q}%")
+                );
+        }
+        $data['programs'] = $data['programs']->orderBy('programs.program_name')->get();
+
         $data['departments'] = Department::orderBy('department_name')->get();
+        // dd($data['departments']->toArray());
         return Inertia::render('Resources/Programs', $data);
     }
     public function program_save(Request $request)
@@ -132,10 +166,20 @@ class Admin extends Controller
     }
 
     // COURSES CONTROL
-    public function courses()
+    public function courses(Request $request)
     {
         $data['title'] = "All Courses";
-        $data['courses'] = Course::leftJoin('programs', 'courses.course_program', '=', 'programs.id')->select('courses.id', 'course_name', 'course_status', 'program_name', 'courses.created_at', 'courses.updated_at', 'hits', 'course_code', 'resource_by_topics', 'resource_by_skills')->orderBy('course_name')->paginate(20);
+        $data['keyword'] = $request->get('q');
+        $data['courses'] = Course::leftJoin('programs', 'courses.course_program', '=', 'programs.id')->select('courses.id', 'course_name', 'course_status', 'program_name', 'courses.created_at', 'courses.updated_at', 'hits', 'course_code', 'resource_by_topics', 'resource_by_skills');
+        if ($request->q) {
+            $data['courses'] = $data['courses']
+                ->where(
+                    fn ($query) =>
+                    $query->where('course_name', 'like', "%{$request->q}%")
+                        ->orWhere('course_code', 'like', "%{$request->q}%")
+                );
+        }
+        $data['courses'] = $data['courses']->orderBy('course_name')->paginate(20);
         return Inertia::render('Resources/Courses', $data);
     }
 

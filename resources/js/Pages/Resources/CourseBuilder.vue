@@ -83,7 +83,7 @@ let bannerChange = ( ev ) => {
                 </div>
                 <div class="col-lg-3">
                     <div class="form-floating mb-3">
-                        <input v-model="form.course_code" type="text" maxlength="6" class="form-control">
+                        <input v-model="form.course_code" required type="text" maxlength="6" class="form-control">
                         <label>Course Code</label>
                     </div>
                 </div>
@@ -124,13 +124,14 @@ let bannerChange = ( ev ) => {
         </div>
         <div class="col-lg-4">
             <div class="form-floating mb-3">
-                <select class="form-control form-select " v-model="form.course_status">
+                <select class="form-select " v-model="form.course_status" required>
                     <option v-for="i in ['Published', 'Unpublished']" :value="i" :key="i">{{ i }}</option>
                 </select>
                 <label>Status</label>
             </div>
             <div class="form-floating mb-3">
-                <select class="form-control" v-model="form.course_program">
+                <select class="form-select" v-model="form.course_program" required>
+                    <option :value="NULL">--Choose One--</option>
                     <optgroup :label="dept" v-for="dept in Object.keys(dept_by_program).sort()" :key="dept">
                         <option :value="i.id" v-for="i in dept_by_program[dept]" :key="i.id">
                             {{ i.program_name }}

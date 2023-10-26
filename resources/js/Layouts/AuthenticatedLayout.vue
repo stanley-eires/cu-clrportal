@@ -9,15 +9,16 @@ defineProps( { title: String } )
 let togglemenu = () => {
     document.querySelector( 'body' ).classList.toggle( 'menu-hidden' )
 }
-let roles = usePage().props.auth.user.roles;
+let can = ( permissions ) => permissions.some( r => usePage().props.auth.permissions.includes( r ) )
+
 let menus = [
-    { title: 'Quick Overview', roles: [ 'admin', 'author' ], url: route( 'admin.overview' ), icon: 'fas fa-chart-simple', component: [ 'Overview', ] },
-    { title: 'Users', roles: [ 'admin' ], url: route( 'admin.users' ), icon: 'fas fa-users', component: [ 'Users', ] },
+    { title: 'Quick Overview', show: can( [ 'access_site_stats' ] ), url: route( 'admin.overview' ), icon: 'fas fa-chart-simple', component: [ 'Overview', ] },
+    { title: 'Users', show: can( [ 'manage_users' ] ), url: route( 'admin.users' ), icon: 'fas fa-users', component: [ 'Users', ] },
+    { title: 'Roles & Permissions', show: usePage().props.auth.permissions.includes( 'manage_roles' ), url: route( 'admin.roles' ), icon: 'fas fa-lock-open', component: [ 'RolesAndPermissions' ] },
     {
-        title: 'Resources Management', roles: [ 'author' ], submenu: [
-            { title: 'Programs', url: route( 'admin.programs' ), component: [ 'Resources/Programs' ] },
-            { title: 'Courses', url: route( 'admin.courses' ), component: [ 'Resources/Courses', 'Resources/CourseBuilder' ] },
-        ]
+        title: 'Resources Management', show: usePage().props.auth.permissions.includes( 'manage_programs' ) || usePage().props.auth.permissions.includes( 'manage_courses' ), submenu: [
+            { title: 'Programs', show: usePage().props.auth.permissions.includes( 'manage_programs' ), url: route( 'admin.programs' ), component: [ 'Resources/Programs' ] },
+            { title: 'Courses', show: usePage().props.auth.permissions.includes( 'manage_courses' ), url: route( 'admin.courses' ), component: [ 'Resources/Courses', 'Resources/CourseBuilder' ] }, ]
     }
 ]
 let message = computed( () => usePage().props.flash.message )
@@ -32,14 +33,13 @@ watch( message, ( value ) => {
 <template>
     <Head :title="title" />
     <nav class="navbar fixed-top">
-        <div class="container-md">
+        <div class="container-fluid">
             <div class="d-flex align-items-center navbar-left">
                 <a href="#" @click.prevent="togglemenu" class="menu-button d-md-none">
                     <i class="fas fa-bars fs-5"></i>
                 </a>
                 <Link class="" :href="route('public.courses')">
-                <img style="width:100%;height:50px;object-fit: contain;"
-                    src="http://clr.covenantuniversity.edu.ng/images/demo/CENTRE_FOR_LEARNING_RESOURCES.png" />
+                <img style="width:100%;height:50px;object-fit: contain;" src="/clr.png" />
                 </Link>
             </div>
             <div class="ms-auto">
@@ -47,12 +47,13 @@ watch( message, ( value ) => {
             </div>
         </div>
     </nav>
+
     <div class="menu">
         <div class="sub-menu">
             <div class="scroll">
                 <ul class="list-unstyled" data-link="menu" id="menuTypes">
                     <li v-for="menu in menus" :key="menu" :class="{ active: menu.component?.includes($page.component) }">
-                        <template v-if="menu.roles.some((role) => $page.props.auth.user.roles.includes(role))">
+                        <template v-if="menu.show">
                             <template v-if="menu.submenu">
                                 <a href="#" data-bs-toggle="collapse" :data-bs-target="`#_${kebabCase(menu.title)}`"
                                     aria-expanded="true" aria-controls="collapseMenuTypes" class="rotate-arrow-icon">
@@ -60,9 +61,10 @@ watch( message, ( value ) => {
                                 </a>
                                 <div :id="`_${kebabCase(menu.title)}`" class="collapse show" data-bs-parent="#menuTypes">
                                     <ul class="list-unstyled inner-level-menu">
-                                        <li v-for="    sub     in     menu.submenu    " :key="sub"
+                                        <li v-for="sub in menu.submenu" :key="sub"
                                             :class="{ active: sub.component?.includes($page.component) }">
-                                            <Link :href="sub.url"> <span class="d-inline-block">{{ sub.title }}</span>
+                                            <Link v-if="sub.show" :href="sub.url"> <span
+                                                class="d-inline-block">{{ sub.title }}</span>
                                             </Link>
                                         </li>
                                     </ul>
@@ -71,7 +73,6 @@ watch( message, ( value ) => {
                             <Link v-else :href="menu.url">
                             <i :class="menu.icon"></i> <span class="d-inline-block">{{ menu.title }} </span>
                             </Link>
-
                         </template>
                     </li>
                 </ul>

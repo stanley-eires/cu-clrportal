@@ -12,7 +12,7 @@ let local_state = ref( props.modelValue );
 
 <template>
     <tr>
-        <td style="width:70%">
+        <td style="width:60%">
             <div class="form-floating">
                 <textarea type="text" class="form-control" v-model="local_state.title"></textarea>
                 <label>Resource</label>
@@ -20,9 +20,10 @@ let local_state = ref( props.modelValue );
         </td>
         <td style="min-width:150px">
             <div class="form-floating">
-                <select class="form-control form-select " v-model="local_state.type">
+                <select class="form-select" v-model="local_state.type">
+                    <option value="">--Choose Type--</option>
                     <option
-                        v-for="(i) in ['Books', 'Articles', 'Newspapers & Industry report', 'Teaching methods', 'Learning methods', 'Tools', 'Techniques']"
+                        v-for="(i) in ['Books', 'Journal Articles', 'Newspaper Articles', 'Industry Reports', 'Workshops & Trainings', 'Software & Tools']"
                         :key="i">{{ i }}</option>
                 </select>
                 <label>Type</label>

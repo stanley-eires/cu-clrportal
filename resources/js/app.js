@@ -33,7 +33,7 @@ createInertiaApp( {
             .use( plugin )
             .use( ZiggyVue, Ziggy )
             .use( vue3GoogleLogin, {
-                clientId: '888479091012-0sfqr1n21hq3odmu1t277i4v349ghm8b.apps.googleusercontent.com'
+                clientId: '718811342635-5pau2fatr2dl61iq3dir7eln02ol2d9s.apps.googleusercontent.com'
             } ).use(
                 Vue3Toasity, { autoClose: 10000, dangerouslyHTMLString: true, theme: 'colored' }
             )
